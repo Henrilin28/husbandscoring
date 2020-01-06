@@ -46,7 +46,6 @@ class HusBandScoring():
         if self.weight >= 150:
             self.score += round((150 - self.weight)/10.0)*100
         self.score += (self.height - 175)*100
-        print(f"{self.score}")
 
     def talent_score(self):
         """This function will calculate talent score based on a dictionary
@@ -59,16 +58,13 @@ class HusBandScoring():
         
         self.score += base_habit + base_attitude + (sum(self.habits.values()) * 200) + (sum(self.attitude.values()) * 200)
 
-    def cheated(self):
-        if self.cheated=True:
+    def did_he_cheated(self):
+        if self.cheated==True:
             self.score = 0
 
     def print_summary(self):
 
-        summary = f"""{self.name} has totlal score {self.score}
-
-        
-                   """
+        summary = f"""{self.name} has totlal score {self.score}"""
         print (summary)
 
 class NumberValidator(Validator):
@@ -153,19 +149,21 @@ basic_questions = [
 final_questions = basic_questions + talent_questions + habits_questions + attitude_questions
 
 answers = prompt(final_questions, style=style)
-talent = search_key(answers, 'talent_')
-habits = search_key(answers, 'habits_')
-attitude = search_key(answers, 'attitude_')
+talent_dict = search_key(answers, 'talent_')
+habits_dict = search_key(answers, 'habits_')
+attitude_dict = search_key(answers, 'attitude_')
 husband = HusBandScoring(answers['husband_name'],
                          answers['height'],
                          answers['weight'],
                          answers['cheated'],
-                         talents,
-                         habits,
-                         attitude
+                         talent_dict,
+                         habits_dict,
+                         attitude_dict
                          )
 husband.basic_score()
 husband.talent_score()
 husband.habit_attitude_score()
-husband.cheated()
+husband.did_he_cheated()
 pprint(husband.print_summary())
+pprint("Your answers:")
+pprint(answers)
