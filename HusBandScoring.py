@@ -12,12 +12,17 @@ style = style_from_dict({
 })
 
 
+
+def search_key(dictionary, search_key):
+    return dict(filter(lambda item: search_key in item[0], dictionary.items())) 
+
 class HusBandScoring():
     
     def __init__(self, 
                  name, 
                  height, 
-                 weight, 
+                 weight,
+                 cheated,
                  talents, 
                  habits,
                  attitude
@@ -28,6 +33,7 @@ class HusBandScoring():
         self.talents = talents
         self.habits = habits
         self.attitude = attitude
+        self.cheated = cheated
         self.score = 0
 
 
@@ -54,7 +60,8 @@ class HusBandScoring():
         self.score += base_habit + base_attitude + (sum(self.habits.values()) * 200) + (sum(self.attitude.values()) * 200)
 
     def cheated(self):
-        self.score = 0
+        if self.cheated=True:
+            self.score = 0
 
     def print_summary(self):
 
@@ -109,7 +116,7 @@ attitude = ['rarely fight with you', 'rarely judge on your apperance',
 
 attitude_questions = [     {
         'type': 'confirm',
-        'name': f'hattitude_{h}',
+        'name': f'attitude_{h}',
         'message': f'He {j}?',
         'default': True
     } for h, j in enumerate(attitude) ]
@@ -146,5 +153,19 @@ basic_questions = [
 final_questions = basic_questions + talent_questions + habits_questions + attitude_questions
 
 answers = prompt(final_questions, style=style)
-print('Order receipt:')
-pprint(answers)
+talent = search_key(answers, 'talent_')
+habits = search_key(answers, 'habits_')
+attitude = search_key(answers, 'attitude_')
+husband = HusBandScoring(answers['husband_name'],
+                         answers['height'],
+                         answers['weight'],
+                         answers['cheated'],
+                         talents,
+                         habits,
+                         attitude
+                         )
+husband.basic_score()
+husband.talent_score()
+husband.habit_attitude_score()
+husband.cheated()
+pprint(husband.print_summary())
